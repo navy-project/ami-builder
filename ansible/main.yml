@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  sudo: yes
+  connection: local
+
+  roles:
+    - common
+    - docker
+    - navy-host

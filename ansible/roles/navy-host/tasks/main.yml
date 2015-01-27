@@ -1,0 +1,7 @@
+---
+- name: ensure navyproject/container-proxy docker container is running
+  docker:
+    image: navyproject/container-proxy
+    name: container_proxy
+    ports: 8080
+    restart_policy: always
