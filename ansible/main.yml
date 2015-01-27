@@ -4,6 +4,6 @@
   connection: local
 
   roles:
-    - common
+    # - common
     - docker
     - navy-host

@@ -1,7 +1,73 @@
 ---
 - name: ensure navyproject/container-proxy docker container is running
   docker:
+    state: running
     image: navyproject/container-proxy
     name: container_proxy
-    ports: 8080
-    restart_policy: always
+    ports:
+      - 172.17.42.1:8080:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    # restart_policy: always
+- name: ensure navyproject/host-proxy docker container is running
+  docker:
+    image: navyproject/host-proxy
+    state: running
+    name: host_proxy
+    ports:
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: nginx
+    # restart_policy: always
+- name: ensure navyproject/etcd docker container is running
+  docker:
+    state: running
+    image: navyproject/etcd
+    name: etcd
+    # restart_policy: always
+- name: ensure navyproject/commodore docker container is running
+  docker:
+    state: running
+    image: navyproject/commodore
+    name: commodore
+    links:
+      - etcd:etcd
+    # restart_policy: always
+- name: ensure navyproject/harbourmaster docker container is running
+  docker:
+    state: running
+    image: navyproject/harbourmaster
+    name: harbourmaster
+    links:
+      - etcd:etcd
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    # restart_policy: always
+- name: ensure navyproject/coastguard docker container is running
+  docker:
+    state: running
+    image: navyproject/coastguard
+    name: coastguard
+    links:
+      - etcd:etcd
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    # restart_policy: always
+- name: ensure navyproject/navyapi docker container is running
+  docker:
+    state: running
+    image: navyproject/navyapi
+    name: navyapi
+    links:
+      - etcd:etcd
+    ports:
+      - 4040:4040
+- name: ensure navyproject/navystreamwatcher docker container is running
+  docker:
+    state: running
+    image: navyproject/navystreamwatcher
+    name: navystreamwatcher
+    ports:
+      - 4041:4041
+    # restart_policy: always
