@@ -1,4 +1,12 @@
 ---
+# BUG(Tobscher) option restart_policy is not available until ansible 1.9
+# -----
+# This will patch the docker module to allow us to use
+# the restart_policy option.
+# --
+# Remove this once ansible 1.9 is available
+- include: patches.yml
+
 - name: ensure navyproject/container-proxy docker container is running
   docker:
     state: running
@@ -8,24 +16,24 @@
       - 172.17.42.1:8080:80
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
-    # restart_policy: always
+    restart_policy: always
 - name: ensure navyproject/host-proxy docker container is running
   docker:
-    image: navyproject/host-proxy
     state: running
+    image: navyproject/host-proxy
     name: host_proxy
     ports:
       - 443:443
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
     command: nginx
-    # restart_policy: always
+    restart_policy: always
 - name: ensure navyproject/etcd docker container is running
   docker:
     state: running
     image: navyproject/etcd
     name: etcd
-    # restart_policy: always
+    restart_policy: always
 - name: ensure navyproject/commodore docker container is running
   docker:
     state: running
@@ -33,7 +41,7 @@
     name: commodore
     links:
       - etcd:etcd
-    # restart_policy: always
+    restart_policy: always
 - name: ensure navyproject/harbourmaster docker container is running
   docker:
     state: running
@@ -43,7 +51,7 @@
       - etcd:etcd
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
-    # restart_policy: always
+    restart_policy: always
 - name: ensure navyproject/coastguard docker container is running
   docker:
     state: running
@@ -53,7 +61,7 @@
       - etcd:etcd
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
-    # restart_policy: always
+    restart_policy: always
 - name: ensure navyproject/navyapi docker container is running
   docker:
     state: running
@@ -63,6 +71,7 @@
       - etcd:etcd
     ports:
       - 4040:4040
+    restart_policy: always
 - name: ensure navyproject/navystreamwatcher docker container is running
   docker:
     state: running
@@ -70,4 +79,4 @@
     name: navystreamwatcher
     ports:
       - 4041:4041
-    # restart_policy: always
+    restart_policy: always

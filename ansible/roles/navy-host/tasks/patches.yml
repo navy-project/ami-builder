@@ -1,0 +1,4 @@
+- name: update docker module to support restart_policy
+  copy:
+    src: ./
+    dest: /usr/lib/python2.6/site-packages/ansible/modules/core/cloud/docker/
